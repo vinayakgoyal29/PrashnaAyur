@@ -15,24 +15,24 @@
 
 ---
 
-## 📌 Executive Summary
+##  Executive Summary
 
 **PrashnAyur** is an autonomous, multilingual intake kiosk and clinical decision-support EHR engineered to eliminate outpatient department (OPD) congestion in public AYUSH healthcare facilities. By conducting empathetic, full-duplex voice triage in regional languages and auto-synthesizing structured SOCRATES and Ayurvedic Prakriti profiles into ABDM-compliant FHIR records, PrashnAyur reduces doctor intake overhead by over 70% while preserving holistic diagnostic depth.
 
 ---
 
-## 🚀 Core Features
+##  Core Features
 
-* 🎙️ **Full-Duplex Live Voice Triage (Hindi & English)**: Ultra-low-latency, natural conversational speech-to-speech interaction powered by the Gemini Multimodal Live API and a custom Web Audio API Worklet streaming 24kHz raw PCM audio bidirectionally.
-* 🌿 **Dual Clinical Ontologies**: Concurrently structures vernacular patient narratives into both allopathic frameworks (**SOCRATES** pain assessment: *Site, Onset, Character, Radiation, Associations, Time course, Exacerbating/Relieving, Severity*) and holistic AYUSH diagnostics (**Ayurvedic Prakriti** phenotypic tendencies: *Vata, Pitta, Kapha*).
-* 📄 **Multimodal Document OCR**: Integrated document scanning for physical prescriptions and prior laboratory diagnostic reports, extracting relevant clinical history using multimodal vision models.
-* ⚡ **Real-Time Doctor EHR Sync via SSE**: Live OPD token generation and instant queue updates streamed to the practitioner's console via Server-Sent Events (SSE), eliminating manual polling.
-* 🇮🇳 **ABDM / ABHA Integration (FHIR R4)**: Automatic generation of standardized, interoperable FHIR R4 JSON bundles mapped to patient Care Contexts for seamless national health ecosystem integration.
-* 🛡️ **Zero Local Voice Retention**: Kiosk streams voice directly into memory buffers without caching sensitive patient audio on kiosk disks, upholding DPDP and healthcare confidentiality standards.
+*  **Full-Duplex Live Voice Triage (Hindi & English)**: Ultra-low-latency, natural conversational speech-to-speech interaction powered by the Gemini Multimodal Live API and a custom Web Audio API Worklet streaming 24kHz raw PCM audio bidirectionally.
+*  **Dual Clinical Ontologies**: Concurrently structures vernacular patient narratives into both allopathic frameworks (**SOCRATES** pain assessment: *Site, Onset, Character, Radiation, Associations, Time course, Exacerbating/Relieving, Severity*) and holistic AYUSH diagnostics (**Ayurvedic Prakriti** phenotypic tendencies: *Vata, Pitta, Kapha*).
+*  **Multimodal Document OCR**: Integrated document scanning for physical prescriptions and prior laboratory diagnostic reports, extracting relevant clinical history using multimodal vision models.
+*  **Real-Time Doctor EHR Sync via SSE**: Live OPD token generation and instant queue updates streamed to the practitioner's console via Server-Sent Events (SSE), eliminating manual polling.
+*  **ABDM / ABHA Integration (FHIR R4)**: Automatic generation of standardized, interoperable FHIR R4 JSON bundles mapped to patient Care Contexts for seamless national health ecosystem integration.
+*  **Zero Local Voice Retention**: Kiosk streams voice directly into memory buffers without caching sensitive patient audio on kiosk disks, upholding DPDP and healthcare confidentiality standards.
 
 ---
 
-## 🏗️ System Architecture
+##  System Architecture
 
 ```
                                   +----------------------------------------------------+
@@ -80,7 +80,7 @@
 
 ---
 
-## 🛠️ Tech Stack & Dependencies
+##  Tech Stack & Dependencies
 
 | Layer | Technologies |
 |---|---|
@@ -94,7 +94,7 @@
 
 ---
 
-## ⚡ Quickstart Setup Instructions
+##  Setup Instructions
 
 ### 1. Prerequisites
 - Python 3.10 or higher installed
@@ -165,17 +165,7 @@ python3 -m uvicorn kiosk_server:app --port 8001 --reload
 python3 -m uvicorn doctor_server:app --port 8002 --reload
 ```
 * Access Doctor Dashboard: **[http://localhost:8002](http://localhost:8002)**
-
----
-
-## 🎥 Video Walkthrough
-
-Watch a complete demonstration of the autonomous vernacular intake session, real-time audio triage, and instantaneous doctor queue synchronization:
-
-[![PrashnAyur Walkthrough Video Placeholder](https://img.shields.io/badge/Demo_Video-Watch_Walkthrough-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtube.com/placeholder-demo-link)
-
-*(Walkthrough link: `https://youtube.com/placeholder-demo-link`)*
-
+  
 ---
 
 ## 📁 Repository Structure
@@ -212,15 +202,6 @@ PrashnaAyur/
 └── uploaded_records/          # User-uploaded prescription & report scans
     └── .gitkeep               # Directory anchor
 ```
-
----
-
-## 👥 Hackathon Team
-
-| Team Member | Role / Contribution |
-|---|---|
-| **Vinayak Goyal** | Full-Stack Architecture, Gemini Live Integration, Audio Streaming Worklet |
-| **Team Tech Rookies** | Clinical Ontology Mapping, FHIR Standardization, EHR Implementation |
 
 ---
 
