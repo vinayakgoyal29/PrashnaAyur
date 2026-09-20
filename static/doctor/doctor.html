@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PrashnaAyur &mdash; Doctor Dashboard</title>
+  <link rel="stylesheet" href="/static/doctor/doctor.css" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       LOGIN SCREEN
+       ══════════════════════════════════════════════════════════════ -->
+  <div id="login-screen" class="screen active">
+    <div class="login-card">
+      <div>
+        <h1>PrashnaAyur</h1>
+        <p>Doctor Dashboard &mdash; Secure Login</p>
+      </div>
+
+      <div class="form-group">
+        <label for="doctor-id">Doctor ID</label>
+        <input type="text" id="doctor-id" placeholder="DOC-AYUSH-101" autocomplete="username" />
+      </div>
+
+      <div class="form-group">
+        <label for="doctor-pin">PIN</label>
+        <input type="password" id="doctor-pin" placeholder="Enter PIN" autocomplete="current-password" />
+      </div>
+
+      <div id="login-error" class="banner error">Invalid credentials. Please try again.</div>
+
+      <button class="btn btn-primary" id="btn-login">Log In</button>
+
+      <p style="font-size:0.75rem; color:#aaa; text-align:center; margin-top:0.25rem">
+        Demo-grade authentication. Not for production use.
+      </p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       DASHBOARD SCREEN
+       ══════════════════════════════════════════════════════════════ -->
+  <div id="dashboard-screen" class="screen">
+
+    <!-- Top bar -->
+    <div class="top-bar">
+      <h1>PrashnaAyur &mdash; Doctor Dashboard</h1>
+      <div style="display:flex; align-items:center; gap:1rem">
+        <span id="doctor-label" style="font-size:0.85rem; opacity:0.85"></span>
+        <span id="sse-indicator" title="Live queue status">
+          <span class="sse-dot" id="sse-dot"></span>
+          <span style="font-size:0.75rem; opacity:0.8; margin-left:4px" id="sse-label">Connecting</span>
+        </span>
+        <button class="btn btn-outline btn-sm" id="btn-logout"
+                style="color:white; border-color:rgba(255,255,255,0.5)">Log Out</button>
+      </div>
+    </div>
+
+    <!-- Two-panel layout -->
+    <div class="main-layout">
+
+      <!-- LEFT: Patient Queue -->
+      <div class="queue-panel">
+        <div class="queue-header">
+          <h2>Patient Queue</h2>
+          <button class="btn btn-outline btn-sm" id="btn-refresh" data-testid="refresh-queue-btn">Refresh</button>
+        </div>
+        <div class="queue-list" id="queue-list">
+          <!-- Queue items rendered by doctor.js -->
+        </div>
+      </div>
+
+      <!-- RIGHT: Detail view -->
+      <div class="detail-panel" id="detail-panel">
+        <div class="empty-state" id="empty-state">
+          Select a patient from the queue to view their intake record.
+        </div>
+
+        <!-- Detail content (hidden until a record is selected) -->
+        <div id="detail-content" style="display:none; flex-direction:column; gap:1.25rem">
+
+          <!-- Urgent banner (visible for RED_FLAG records only) -->
+          <div class="urgent-banner" id="urgent-banner" style="display:none">
+            Urgent &mdash; Emergency escalation triggered during intake. Review immediately.
+          </div>
+
+          <!-- Metrics bar -->
+          <div class="metrics-bar">
+            <div class="metric">
+              <div class="metric-label">Patient</div>
+              <div class="metric-value" id="d-name">-</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Age</div>
+              <div class="metric-value" id="d-age">-</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">ABHA ID</div>
+              <div class="metric-value" id="d-abha" style="font-size:0.9rem">-</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Triage Status</div>
+              <div class="metric-value" id="d-status">-</div>
+            </div>
+          </div>
+
+          <!-- SOCRATES / Prakriti -->
+          <div class="detail-card">
+            <div class="detail-card-header">SOCRATES Assessment + Prakriti Notes</div>
+            <div class="detail-card-body">
+              <table class="socrates-table" id="socrates-table">
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ABHA History -->
+          <div class="detail-card">
+            <div class="detail-card-header">ABHA Health History</div>
+            <div class="detail-card-body">
+              <div class="history-section">
+                <h4>Chronic Conditions</h4>
+                <ul id="d-conditions"></ul>
+              </div>
+              <div class="history-section">
+                <h4>Past Medications</h4>
+                <ul id="d-medications"></ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Transcript -->
+          <div class="detail-card">
+            <div class="detail-card-header">Interview Transcript</div>
+            <div class="detail-card-body">
+              <div class="transcript-list" id="d-transcript"></div>
+            </div>
+          </div>
+
+          <!-- Documents -->
+          <div class="detail-card">
+            <div class="detail-card-header">Attached Documents</div>
+            <div class="detail-card-body" id="d-documents" style="display:flex; gap:1rem; flex-wrap:wrap">
+            </div>
+          </div>
+
+          <!-- Prescription Suite -->
+          <div class="detail-card" id="prescription-suite">
+            <div class="detail-card-header">ABDM Prescription</div>
+            <div class="detail-card-body">
+              <div id="rx-rows">
+                <div class="rx-row" style="display:flex; gap:0.5rem; margin-bottom:0.5rem;">
+                   <input type="text" placeholder="Medicine Name" class="rx-med" style="flex:1">
+                   <input type="text" placeholder="Dose" class="rx-dose" style="flex:1">
+                   <input type="text" placeholder="Vehicle/Anupana" class="rx-vehicle" style="flex:1">
+                   <input type="text" placeholder="Frequency" class="rx-freq" style="flex:1">
+                </div>
+              </div>
+              <button class="btn btn-outline btn-sm" id="btn-add-rx-row" style="margin-bottom:1rem">+ Add Formulation</button>
+              
+              <h4 style="margin-bottom:0.5rem">Pathya-Apathya (Diet/Lifestyle)</h4>
+              <textarea id="rx-pathya" style="width:100%; height:80px; margin-bottom:1rem; padding:0.5rem; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+              
+              <button class="btn btn-primary" id="btn-finalize-rx">Sign, Finalize & Link to ABHA</button>
+              
+              <div id="rx-confirmation" class="banner" style="display:none; margin-top:1rem; background-color: #d4edda; color: #155724; border-color: #c3e6cb;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 0.5rem;">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <div style="display:inline-block; vertical-align:middle;">
+                  <div id="rx-confirm-text"></div>
+                  <div style="font-weight:600; margin-top:4px">FHIR R4 Bundle Validated</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FHIR Export -->
+          <button class="btn btn-outline" id="btn-fhir-export" style="width:auto; align-self:flex-start">
+            Export FHIR JSON
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="doc-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center;">
+    <div style="background:#fff; padding:1rem; border-radius:8px; width:90%; height:90%; display:flex; flex-direction:column;">
+      <div style="text-align:right; margin-bottom:0.5rem;">
+        <button class="btn btn-outline btn-sm" id="btn-close-modal">Close</button>
+      </div>
+      <div id="doc-modal-content" style="flex:1; display:flex; align-items:center; justify-content:center; overflow:hidden;"></div>
+    </div>
+  </div>
+
+  <script src="/static/doctor/doctor.js" type="module"></script>
+</body>
+</html>

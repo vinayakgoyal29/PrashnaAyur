@@ -1,0 +1,288 @@
+/*
+ * doctor.css
+ * ==========
+ * Clinical dashboard for the PrashnaAyur doctor interface.
+ * No emoji. No external icon fonts.
+ */
+
+:root {
+  --primary:       #005C97;
+  --primary-dark:  #004070;
+  --primary-light: #e6f0f7;
+  --danger:        #c0392b;
+  --danger-light:  #fdecea;
+  --success:       #2e7d32;
+  --success-light: #e8f5e9;
+  --text-dark:     #1a2b3c;
+  --text-muted:    #5a7080;
+  --bg:            #f4f8fa;
+  --white:         #ffffff;
+  --border:        #dde5ed;
+  --radius:        10px;
+  --transition:    0.25s ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text-dark);
+}
+
+/* ── Layout shells ─────────────────────────────────────────────────────────── */
+.screen { display: none; height: 100%; }
+.screen.active { display: flex; }
+
+/* Login */
+#login-screen {
+  align-items: center;
+  justify-content: center;
+  background: var(--primary);
+}
+
+.login-card {
+  background: var(--white);
+  border-radius: 14px;
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.login-card h1 { color: var(--primary); font-size: 1.6rem; }
+.login-card p  { color: var(--text-muted); font-size: 0.88rem; }
+
+/* Dashboard */
+#dashboard-screen {
+  flex-direction: column;
+}
+
+.top-bar {
+  background: var(--primary);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  flex-shrink: 0;
+}
+
+.top-bar h1 { font-size: 1.2rem; font-weight: 700; }
+
+.main-layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Queue panel */
+.queue-panel {
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.queue-header {
+  padding: 1rem 1.25rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.queue-header h2 { font-size: 1rem; font-weight: 700; }
+
+.queue-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Queue item */
+.queue-item {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition), transform 0.15s;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.queue-item:hover { border-color: var(--primary); background: var(--primary-light); }
+.queue-item.active { border-color: var(--primary); background: var(--primary-light); }
+
+.queue-item.urgent {
+  border-color: var(--danger);
+  background: var(--danger-light);
+}
+
+.queue-item.urgent:hover { background: #f9c9c5; }
+
+.qi-name   { font-weight: 700; font-size: 0.95rem; }
+.qi-sub    { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+.qi-status {
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-top: 4px;
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 99px;
+}
+.qi-status.normal { background: var(--success-light); color: var(--success); }
+.qi-status.urgent { background: var(--danger-light);  color: var(--danger); }
+
+/* Detail panel */
+.detail-panel {
+  overflow-y: auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.empty-state {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* Detail card */
+.detail-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.detail-card-header {
+  padding: 0.75rem 1.25rem;
+  background: var(--primary-light);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--primary-dark);
+  border-bottom: 1px solid var(--border);
+}
+
+.detail-card-body { padding: 1rem 1.25rem; }
+
+/* Metrics bar */
+.metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+}
+
+.metric {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+}
+
+.metric-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.metric-value { font-size: 1.2rem; font-weight: 700; margin-top: 2px; color: var(--text-dark); }
+.metric-value.urgent { color: var(--danger); }
+
+/* SOCRATES table */
+.socrates-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+.socrates-table tr:not(:last-child) td { border-bottom: 1px solid var(--border); }
+.socrates-table td { padding: 0.55rem 0; vertical-align: top; }
+.socrates-table td:first-child { font-weight: 700; color: var(--text-muted); width: 40%; padding-right: 1rem; }
+
+/* Transcript */
+.transcript-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.tx-line { font-size: 0.85rem; line-height: 1.4; padding: 0.4rem 0.6rem; border-radius: 6px; }
+.tx-line.patient   { background: var(--primary-light); color: var(--primary-dark); }
+.tx-line.assistant { background: #f0f0f0;              color: var(--text-dark); }
+
+/* ABHA history */
+.history-section { margin-bottom: 0.75rem; }
+.history-section h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--text-muted); }
+.history-section ul { list-style: none; display: flex; flex-direction: column; gap: 0.25rem; }
+.history-section li { font-size: 0.85rem; padding: 0.35rem 0.5rem; background: var(--bg); border-radius: 6px; }
+
+/* Urgent detail banner */
+.urgent-banner {
+  background: var(--danger);
+  color: var(--white);
+  border-radius: var(--radius);
+  padding: 0.75rem 1.25rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+/* ── Forms ─────────────────────────────────────────────────────────────────── */
+.form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+.form-group label { font-weight: 600; font-size: 0.88rem; color: var(--text-dark); }
+
+input[type="text"], input[type="password"] {
+  padding: 0.7rem 0.9rem;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  outline: none;
+  width: 100%;
+  transition: border-color var(--transition);
+}
+
+input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,92,151,0.12); }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1.25rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition);
+  width: 100%;
+}
+
+.btn-primary  { background: var(--primary); color: var(--white); }
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-sm       { padding: 0.4rem 0.9rem; width: auto; font-size: 0.82rem; }
+.btn-outline  { background: transparent; color: var(--primary); border: 1.5px solid var(--primary); }
+.btn-danger   { background: var(--danger); color: var(--white); }
+
+.banner { padding: 0.6rem 0.9rem; border-radius: 7px; font-size: 0.88rem; font-weight: 500; display: none; }
+.banner.visible { display: block; }
+.banner.error   { background: var(--danger-light); color: var(--danger); }
+
+/* SSE indicator dot */
+.sse-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #ccc;
+  display: inline-block;
+}
+.sse-dot.connected { background: #4caf50; }

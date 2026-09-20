@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PrashnaAyur &mdash; Patient Intake Kiosk</title>
+  <link rel="stylesheet" href="/static/kiosk/kiosk.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       PAGE 1: ABHA ID ENTRY
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <div id="page-abha" class="page active">
+    <h1>PrashnaAyur</h1>
+    <p data-i18n="subtitle">AYUSH Hospital &mdash; Patient Intake Kiosk</p>
+
+    <!-- Language Selector (Issue 1 & 2) -->
+    <div class="language-selector" style="margin-top: 0.75rem;">
+      <button type="button" class="lang-btn active" data-lang="en" id="lang-btn-en">English</button>
+      <button type="button" class="lang-btn" data-lang="hi" id="lang-btn-hi">हिंदी (Hindi)</button>
+    </div>
+
+    <div class="card">
+      <h2 data-i18n="patientVerification">Patient Verification</h2>
+      <p style="margin: 0.5rem 0 1.25rem" data-i18n="abhaInstructions">Please enter your 14-digit ABHA Health ID to begin.</p>
+
+      <div class="form-group">
+        <label for="abha-input" data-i18n="abhaIdLabel">ABHA ID</label>
+        <input
+          type="text"
+          id="abha-input"
+          maxlength="14"
+          inputmode="numeric"
+          placeholder="12345678901234"
+          data-i18n-placeholder="abhaPlaceholder"
+          autocomplete="off"
+        />
+      </div>
+
+      <div id="abha-error" class="banner error" data-i18n="abhaError">Invalid ABHA ID. Please enter exactly 14 digits.</div>
+
+      <button class="btn btn-primary" id="generate-otp-btn" style="margin-top: 0.5rem" data-i18n="generateOtp">
+        Generate OTP
+      </button>
+    </div>
+
+    <p style="font-size: 0.8rem; color: #aaa; margin-top: auto" data-i18n="disclaimer">
+      This kiosk collects intake information for your doctor. No diagnosis is provided.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       PAGE 2: OTP VERIFICATION
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <div id="page-otp" class="page">
+    <h1>PrashnaAyur</h1>
+
+    <div class="card" id="otp-modal" style="display: flex; flex-direction: column; gap: 0.75rem;">
+      <h2 data-i18n="verifyIdentity">Verify Your Identity</h2>
+      <p style="margin-bottom: 0.5rem" data-i18n="otpInstructions">A demo one-time code has been generated (no SMS gateway configured):</p>
+
+      <div class="otp-display">
+        <span data-i18n="demoOtpLabel">Demo OTP &mdash; enter this code below:</span>
+        <span class="otp-code" id="demo-otp-display">------</span>
+      </div>
+
+      <div class="form-group" style="margin-top: 0.75rem; margin-bottom: 0;">
+        <label for="otp-input" data-i18n="enterOtpLabel">Enter the 6-digit code</label>
+        <input type="text" id="otp-input" maxlength="6" inputmode="numeric" placeholder="------" autocomplete="off" />
+      </div>
+
+      <!-- Reserved fixed-height container to eliminate layout shift (Issue 1) -->
+      <div class="otp-error-slot">
+        <div id="otp-error" class="banner error banner-reserved" data-i18n="otpError">Incorrect code. Please try again.</div>
+      </div>
+
+      <button class="btn btn-primary" id="btn-verify-otp" data-i18n="verifyBtn">Verify</button>
+      <button class="btn btn-outline" id="btn-resend-otp" style="margin-top: 0.25rem" data-i18n="resendOtp">Regenerate Code</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       PAGE 2.5: DOCUMENT UPLOAD
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <div id="page-upload" class="page">
+    <h1>PrashnaAyur</h1>
+    <p data-i18n="subtitle">AYUSH Hospital &mdash; Patient Intake Kiosk</p>
+
+    <div class="card">
+      <h2 data-i18n="uploadRecords">Upload Previous Prescription or Report (Optional)</h2>
+      <p style="margin: 0.5rem 0 1.25rem" data-i18n="uploadInstructions">Upload any past prescriptions, lab reports, or scans.</p>
+      
+      <div id="drop-zone" class="drop-zone">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#005C97" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 0.5rem;">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+        <div style="font-weight: 600; color: #1a2b3c; margin-bottom: 0.35rem;" data-i18n="dropZoneText">
+          Drag &amp; drop files here or browse (PDF, JPG, PNG)
+        </div>
+        <button type="button" class="btn btn-outline" id="btn-browse-files" data-i18n="browseFilesBtn" style="padding: 0.45rem 1.25rem; font-size: 0.9rem; margin: 0.4rem 0;">Browse Files</button>
+        <div style="font-size: 0.8rem; color: #5a7080; margin-top: 0.25rem;" data-i18n="uploadFormats">Supported formats: PDF, PNG, JPG</div>
+      </div>
+      <input type="file" id="file-input" multiple accept=".jpg,.jpeg,.png,.pdf" style="display: none;" />
+      
+      <div id="file-chips" class="file-chips-container" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; margin-bottom: 1.25rem;"></div>
+
+      <div style="display: flex; flex-direction: column; gap: 0.6rem; width: 100%;">
+        <button class="btn btn-primary" id="btn-proceed-triage" data-i18n="proceedTriage">Proceed to Voice Consultation</button>
+        <button class="btn btn-outline" id="btn-skip-upload" data-i18n="skipUploadBtn">Skip &amp; Proceed</button>
+      </div>
+    </div>
+
+    <p style="font-size: 0.8rem; color: #aaa; margin-top: auto" data-i18n="disclaimer">
+      This kiosk collects intake information for your doctor. No diagnosis is provided.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       PAGE 3: VOICE TRIAGE
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <div id="page-triage" class="page">
+    <div class="patient-bar" id="patient-bar">Verified patient</div>
+
+    <!-- Red-flag emergency banner (hidden until flag_emergency fires) -->
+    <div id="red-flag-banner" data-i18n="redFlagBanner">
+      MEDICAL EMERGENCY DETECTED
+      <br />
+      Please proceed to the Emergency Room immediately or call your local
+      emergency number. Do not wait.
+    </div>
+
+    <div class="card" style="display:flex; flex-direction:column; align-items:center; gap:1.25rem; padding: 2rem 1.75rem">
+
+      <!-- Mic button + ripple rings in fixed sibling container (Directive #4) -->
+      <div class="mic-stage" id="triage-active-container" data-container="voice-triage-container" style="flex-shrink: 0; padding: 1rem 0;">
+        <div class="mic-ring-container">
+          <!-- The actual mic button -->
+          <button class="mic-btn state-idle" id="mic-btn" data-button="mic-button" aria-label="Tap to Talk">
+            <!-- Lucide-style outline microphone SVG — no emoji, no icon font -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="9" y="2" width="6" height="11" rx="3" ry="3"/>
+              <path d="M5 10a7 7 0 0 0 14 0"/>
+              <line x1="12" y1="19" x2="12" y2="22"/>
+              <line x1="8"  y1="22" x2="16" y2="22"/>
+            </svg>
+            <span id="mic-label-text">Tap to Talk</span>
+          </button>
+          <!-- Ripple rings (animated only in 'listening' state via CSS) -->
+          <div class="ripple-ring"></div>
+          <div class="ripple-ring"></div>
+          <div class="ripple-ring"></div>
+        </div>
+
+        <div class="mic-label" id="mic-status-label" style="margin-top: 1rem;">Ready. Tap the button to begin your consultation.</div>
+      </div>
+
+      <!-- Loading Card (shown during closing sign-off & token generation) — Issue 5 -->
+      <div id="intake-loading-card" class="card" style="display: none; text-align: center; border: 2px solid #005C97; background: #f0f7ff; padding: 1.75rem; border-radius: 12px; margin: 0.5rem 0 1rem; width: 100%; box-shadow: 0 4px 16px rgba(0, 92, 151, 0.1);">
+        <div style="display: flex; justify-content: center; margin-bottom: 0.75rem;">
+          <div class="loading-spinner" style="width: 44px; height: 44px; border: 4px solid #e0f2fe; border-top: 4px solid #005C97; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        </div>
+        <div style="font-size: 1.1rem; font-weight: 700; color: #005C97; margin-bottom: 0.35rem;">
+          Generating OPD Token & Submitting Intake...
+        </div>
+        <div style="font-size: 0.85rem; color: #475569;">
+          Please wait while your consultation is securely submitted to the AYUSH Doctor EHR.
+        </div>
+      </div>
+
+      <!-- OPD Intake Success Card (shown on session complete) — Directive #4 Section 2 -->
+      <div id="intake-success-card" class="card token-success-card hidden" data-card="token-success-card" style="display: none; text-align: center; border: 2px solid #2e7d32; background: #f4fbf5; padding: 1.75rem; border-radius: 12px; margin: 0.5rem 0 1rem; width: 100%; box-shadow: 0 4px 16px rgba(46, 125, 50, 0.12);">
+        <div style="display: flex; justify-content: center; margin-bottom: 0.75rem;">
+          <div style="width: 54px; height: 54px; border-radius: 50%; background: #e8f5e9; display: flex; align-items: center; justify-content: center; border: 1.5px solid #a5d6a7;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+        </div>
+        <div style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px; color: #2e7d32; font-weight: 700;" data-i18n="opdTokenHeader">
+          OPD Consultation Token
+        </div>
+        <div id="token-display" class="token-value token-number" style="font-size: 3.25rem; font-weight: 800; color: #1b5e20; letter-spacing: 2px; margin: 0.5rem 0;">
+          Token #A-101
+        </div>
+        <div id="token-patient-info" class="patient-details" style="font-size: 0.95rem; color: #2c3e50; font-weight: 600;" data-i18n="verifiedRecord">
+          Patient: <span class="patient-name">Verified Patient</span> | ABHA ID: <span class="abha-id">UNKNOWN</span>
+        </div>
+        <div id="token-instructions" style="font-size: 0.88rem; color: #374151; margin-top: 1rem; padding: 0.85rem; background: #ffffff; border-radius: 8px; border: 1px dashed #a5d6a7; line-height: 1.5;" data-i18n="tokenWaitInstructions">
+          Your clinical intake has been submitted to the doctor.<br>
+          Please proceed to <strong>Waiting Area 2 &mdash; AYUSH OPD (Room 104)</strong>.<br>The doctor will call your token number shortly.
+        </div>
+        <button class="btn btn-primary" id="btn-done-intake" style="margin-top: 1.25rem; width: 100%; background: #2e7d32;" data-i18n="nextPatient">Next Patient</button>
+      </div>
+
+      <!-- Live transcript in separate scrollable panel (Directive #4 Section 1) -->
+      <div class="transcript-container" id="transcript-panel" aria-live="polite" aria-label="Interview transcript"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       PAGE 4: COMPLETE
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <div id="page-complete" class="page">
+    <div id="complete-icon">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#2e7d32"
+           stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    </div>
+
+    <h1>Intake Complete</h1>
+    <p>Your clinical intake has been submitted to the doctor.</p>
+
+    <!-- OPD Token Success Card -->
+    <div class="card" style="text-align: center; border: 2px solid #2e7d32; background: #f4fbf5; padding: 1.75rem; border-radius: 12px; margin: 0.5rem 0 1rem;">
+      <div style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px; color: #2e7d32; font-weight: 700;" data-i18n="opdTokenHeader">
+        OPD Consultation Token
+      </div>
+      <div id="token-display-complete" style="font-size: 3.25rem; font-weight: 800; color: #1b5e20; letter-spacing: 2px; margin: 0.5rem 0;">
+        OPD-A-108
+      </div>
+      <div id="token-patient-info-complete" style="font-size: 0.95rem; color: #2c3e50; font-weight: 600;" data-i18n="verifiedRecord">
+        Verified Patient Record Dispatched
+      </div>
+      <div style="font-size: 0.85rem; color: #495057; margin-top: 1rem; padding: 0.75rem; background: #ffffff; border-radius: 8px; border: 1px dashed #a5d6a7;" data-i18n="tokenWaitInstructions">
+        Please proceed to <strong>Waiting Area 2 &mdash; AYUSH OPD (Room 104)</strong>.<br>The doctor will call your token number shortly.
+      </div>
+    </div>
+
+    <button class="btn btn-primary" id="btn-next-patient" data-i18n="nextPatient">Next Patient</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       PAGE 5: SYSTEM UNAVAILABLE
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <div id="page-unavailable" class="page">
+    <h1 data-i18n="sysUnavailableHeader">System Unavailable</h1>
+    <p data-i18n="sysUnavailableText">The triage system is temporarily unavailable. Please see the front desk to complete your registration.</p>
+    <div id="sys-unavailable-reason" style="margin-top: 0.75rem; padding: 0.5rem 0.75rem; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: 6px; font-size: 0.85rem; color: #dc2626; max-width: 440px; word-break: break-word; text-align: center; display: none;"></div>
+    <div style="display: flex; gap: 1rem; margin-top: 1.5rem; justify-content: center; width: 100%; max-width: 400px;">
+      <button class="btn btn-primary" id="btn-unavailable-retry" style="flex: 1;" data-i18n="retryConnection">Retry</button>
+      <button class="btn btn-secondary" id="btn-unavailable-start" style="flex: 1;" data-i18n="returnStart">Return to Start</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       PAGE 6: SUBMISSION FAILED
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <div id="page-failed" class="page">
+    <h1 data-i18n="unableSubmitHeader">Unable to Submit</h1>
+    <p data-i18n="unableSubmitText">Your intake could not be submitted to the doctor at this time. Please see the front desk for assistance.</p>
+    <button class="btn btn-secondary" id="btn-retry-reset" data-i18n="returnStart">Return to Start</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       DIAGNOSTIC OVERLAY (Audio Pipeline State & Queue Monitoring)
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <div id="audio-diagnostic-overlay" style="display: none; position: fixed; bottom: 12px; right: 12px; background: rgba(15, 23, 42, 0.92); color: #4ade80; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; padding: 10px 14px; border-radius: 8px; z-index: 9999; pointer-events: none; min-width: 250px; line-height: 1.5; border: 1px solid #334155; box-shadow: 0 4px 16px rgba(0,0,0,0.4);">
+    <div style="font-weight: 700; color: #f8fafc; border-bottom: 1px solid #334155; padding-bottom: 4px; margin-bottom: 6px; display: flex; justify-content: space-between;">
+      <span>Audio Diagnostics</span>
+      <span id="diag-badge" style="color: #38bdf8;">WORKLET</span>
+    </div>
+    <div>State: <span id="diag-state" style="color: #f8fafc; font-weight: 600;">DISCONNECTED</span></div>
+    <div>AudioContext: <span id="diag-ctx-state" style="color: #f8fafc;">closed</span> (<span id="diag-sample-rate">0</span> Hz)</div>
+    <div>Chunks (Rx/Tx): <span id="diag-chunks-rx" style="color: #f8fafc;">0</span> / <span id="diag-chunks-tx" style="color: #f8fafc;">0</span></div>
+    <div>Playback Queue: <span id="diag-queue-depth" style="color: #f8fafc;">0</span> samples</div>
+    <div>Turn: <span id="diag-turn" style="color: #f8fafc;">1</span></div>
+  </div>
+
+  <script src="/static/kiosk/kiosk.js" type="module"></script>
+</body>
+</html>

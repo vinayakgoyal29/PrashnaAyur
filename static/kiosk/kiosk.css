@@ -1,0 +1,614 @@
+/*
+ * kiosk.css
+ * =========
+ * Clinical design for the PrashnaAyur patient kiosk.
+ * No emoji. No third-party icon fonts. Pure CSS + inline SVG.
+ */
+
+:root {
+  --primary:       #005C97;
+  --primary-dark:  #004070;
+  --primary-light: #e6f0f7;
+  --danger:        #c0392b;
+  --danger-light:  #fdecea;
+  --text-dark:     #1a2b3c;
+  --text-muted:    #5a7080;
+  --bg:            #f4f8fa;
+  --white:         #ffffff;
+  --radius:        12px;
+  --transition:    0.3s ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text-dark);
+}
+
+/* ── Layout ──────────────────────────────────────────────────────────────── */
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.page {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 640px;
+  min-height: 100vh;
+  padding: 2rem 1.5rem;
+  gap: 1.5rem;
+}
+
+.page.active { display: flex; }
+
+/* ── Typography ──────────────────────────────────────────────────────────── */
+h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-align: center;
+}
+
+h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  text-align: center;
+}
+
+p, label {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* ── Cards ───────────────────────────────────────────────────────────────── */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  padding: 2rem;
+  width: 100%;
+}
+
+/* ── Forms ───────────────────────────────────────────────────────────────── */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-dark);
+  font-size: 0.9rem;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid #cdd8e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color var(--transition);
+  letter-spacing: 0.05em;
+}
+
+input[type="text"]:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(0,92,151,0.12);
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition), transform 0.1s;
+  width: 100%;
+}
+
+.btn:active { transform: scale(0.98); }
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--white);
+}
+
+.btn-primary:hover { background: var(--primary-dark); }
+
+.btn-secondary {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+}
+
+/* ── Error / Info banners ─────────────────────────────────────────────────── */
+.banner {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: none;
+}
+
+.banner.visible { display: block; }
+.banner.error   { background: var(--danger-light); color: var(--danger); }
+.banner.info    { background: var(--primary-light); color: var(--primary); }
+
+/* Reserved error container to eliminate layout shift / sibling reflow (Issue 1) */
+.otp-error-slot {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 0.25rem 0 0.5rem 0;
+}
+
+.banner-reserved {
+  display: block;
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
+  pointer-events: none;
+}
+
+.banner-reserved.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* ── OTP display ─────────────────────────────────────────────────────────── */
+.otp-display {
+  background: var(--primary-light);
+  border: 1.5px dashed var(--primary);
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.otp-code {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 0.4em;
+  color: var(--primary);
+  display: block;
+  margin-top: 0.25rem;
+}
+
+/* ── CIRCULAR MIC BUTTON ─────────────────────────────────────────────────── */
+.mic-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+  padding: 2rem 0;
+}
+
+.mic-ring-container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ripple rings (used during 'listening' state) */
+.ripple-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid var(--primary);
+  opacity: 0;
+  width: 140px;
+  height: 140px;
+  animation: none;
+  pointer-events: none !important;
+}
+
+/* Main circular button */
+.mic-btn {
+  position: relative;
+  z-index: 2;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: var(--primary);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--white);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  box-shadow: 0 4px 20px rgba(0,92,151,0.35);
+  transition: background var(--transition), box-shadow var(--transition);
+  /* idle breathing */
+  animation: breathe 4s ease-in-out infinite;
+  pointer-events: auto !important;
+}
+
+.mic-btn * {
+  pointer-events: none;
+}
+
+.mic-btn svg {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+
+.mic-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.mic-btn span {
+  font-size: 0.74rem;
+  line-height: 1.2;
+  text-align: center;
+  max-width: 110px;
+  display: block;
+}
+
+/* ── STATE ANIMATIONS ──────────────────────────────────────────────────────── */
+
+/* IDLE: slow breathing pulse */
+@keyframes breathe {
+  0%, 100% { transform: scale(1);    box-shadow: 0 4px 20px rgba(0,92,151,0.35); }
+  50%       { transform: scale(1.03); box-shadow: 0 6px 28px rgba(0,92,151,0.5); }
+}
+
+/* LISTENING: pulsing animation and ripple rings */
+@keyframes pulse {
+  0%   { transform: scale(1);    box-shadow: 0 4px 20px rgba(0,92,151,0.5); }
+  50%  { transform: scale(1.06); box-shadow: 0 8px 32px rgba(0,92,151,0.8); }
+  100% { transform: scale(1);    box-shadow: 0 4px 20px rgba(0,92,151,0.5); }
+}
+
+@keyframes ripple {
+  0%   { transform: scale(1);    opacity: 0.7; }
+  100% { transform: scale(2.2);  opacity: 0; }
+}
+
+.mic-btn.state-listening {
+  animation: pulse 1.6s ease-in-out infinite;
+  background: var(--primary-dark);
+}
+
+.mic-btn.state-listening ~ .ripple-ring { animation: ripple 2s ease-out infinite; }
+.mic-btn.state-listening ~ .ripple-ring:nth-child(2) { animation-delay: 0.66s; }
+.mic-btn.state-listening ~ .ripple-ring:nth-child(3) { animation-delay: 1.33s; }
+
+/* SPEAKING / PROCESSING: gradient sweep */
+@keyframes sweep {
+  0%   { background-position: 0% 50%;   }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%;   }
+}
+
+.mic-btn.state-speaking {
+  animation: sweep 2s linear infinite;
+  background: linear-gradient(135deg, #005C97, #0086c3, #005C97);
+  background-size: 300% 300%;
+}
+
+/* RED FLAG: danger override */
+.mic-btn.state-red-flag {
+  animation: none;
+  background: var(--danger);
+  box-shadow: 0 4px 20px rgba(192,57,43,0.45);
+  cursor: not-allowed;
+}
+
+/* ── MIC LABEL ────────────────────────────────────────────────────────────── */
+.mic-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-align: center;
+  transition: color var(--transition);
+}
+
+/* ── RED FLAG BANNER ──────────────────────────────────────────────────────── */
+#red-flag-banner {
+  display: none;
+  width: 100%;
+  background: var(--danger);
+  color: var(--white);
+  text-align: center;
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--radius);
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+#red-flag-banner.visible { display: block; }
+
+/* ── LANGUAGE SELECTOR (Issue 2) ─────────────────────────────────────────── */
+.language-selector {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  width: 100%;
+}
+
+.lang-btn {
+  padding: 0.45rem 1.15rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  border: 1.5px solid #cdd8e0;
+  background: var(--white);
+  color: var(--text-dark);
+  transition: all var(--transition);
+}
+
+.lang-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.lang-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--white);
+  box-shadow: 0 2px 8px rgba(0, 92, 151, 0.25);
+}
+
+/* ── TRANSCRIPT CONTAINER & BUBBLES (Issue 6) ─────────────────────────────── */
+.transcript-container {
+  width: 100%;
+  height: 340px;
+  max-height: 50vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  scroll-behavior: smooth;
+  padding: 1rem 0.85rem 1.5rem 0.85rem; /* Proper bottom padding (pb-4) so bubbles don't clip */
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.04);
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.transcript-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.transcript-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.transcript-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.transcript-container::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.transcript-line {
+  padding: 0.65rem 0.95rem;
+  border-radius: 12px;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  max-width: 80%;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  margin: 0.15rem 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; } }
+
+.transcript-line.patient,
+.transcript-line.user      { background: var(--primary);       color: var(--white);        align-self: flex-end;   border-bottom-right-radius: 2px; }
+.transcript-line.assistant { background: #edf2f7;              color: var(--text-dark);    align-self: flex-start; border-bottom-left-radius: 2px; }
+
+/* ── LIVE TRANSCRIPT CHAT BUBBLES ─────────────────── */
+.chat-bubble {
+  padding: 0.75rem 1rem;
+  border-radius: 14px;
+  font-size: 0.92rem;
+  line-height: 1.48;
+  max-width: 75%;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  margin: 0.35rem 0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  animation: fadeIn 0.2s ease;
+}
+.self-end,
+.bubble-user {
+  align-self: flex-end;
+  background: #005C97;
+  color: #ffffff;
+  border-bottom-right-radius: 3px;
+  border: 1px solid #004b7a;
+}
+.self-start,
+.bubble-assistant {
+  align-self: flex-start;
+  background: #f1f5f9;
+  color: #0f172a;
+  border-bottom-left-radius: 3px;
+  border: 1px solid #e2e8f0;
+}
+.bg-blue-50  { background: #005C97; color: #ffffff; border-bottom-right-radius: 3px; border: 1px solid #004b7a; }
+.bg-slate-50 { background: #f1f5f9; color: #0f172a; border-bottom-left-radius: 3px; border: 1px solid #e2e8f0; }
+
+/* Global hidden utility */
+.hidden { display: none !important; }
+
+/* ── COMPLETE SCREEN ─────────────────────────────────────────────────────── */
+#complete-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #e8f5e9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#complete-icon svg { color: #2e7d32; }
+
+/* ── PATIENT INFO BAR ────────────────────────────────────────────────────── */
+.patient-bar {
+  width: 100%;
+  background: var(--primary-light);
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--primary-dark);
+  text-align: center;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ── DOCUMENT UPLOAD COMPONENT ────────────────────────────────────────── */
+.drop-zone {
+  border: 2px dashed #005C97;
+  background: #f0f7ff;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.drop-zone:hover, .drop-zone.dragover {
+  border-color: #003a60;
+  background: #e1efff;
+}
+
+.file-chips-container {
+  width: 100%;
+}
+
+.file-preview-badge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border: 1px solid #d2e3fc;
+  border-left: 4px solid var(--primary);
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.file-preview-info {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  overflow: hidden;
+  text-align: left;
+}
+
+.file-preview-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+}
+
+.file-preview-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 320px;
+}
+
+.file-preview-size {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.file-preview-remove {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #888;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.file-preview-remove:hover {
+  color: var(--danger);
+  background: var(--danger-light);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}

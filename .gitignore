@@ -1,0 +1,37 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment configurations & API credentials
+.env
+*.env
+.streamlit/secrets.toml
+
+# Local runtime logs & system artifacts
+*.log
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Database runtime files & dirty session state
+# (Schema initializes automatically on launch; baseline seed via scripts/reset_demo_data.py)
+*.db
+*.sqlite3
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Runtime user document uploads (directory structure preserved via .gitkeep)
+uploaded_records/*
+!uploaded_records/.gitkeep
