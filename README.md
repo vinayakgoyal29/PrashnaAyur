@@ -168,7 +168,7 @@ python3 -m uvicorn doctor_server:app --port 8002 --reload
   
 ---
 
-## 📁 Repository Structure
+##  Repository Structure
 
 ```
 PrashnaAyur/
@@ -205,7 +205,7 @@ PrashnaAyur/
 
 ---
 
-## 📄 License & Disclaimer
+##  License & Disclaimer
 
 This project was built for the **Smart India Hackathon 2026**.  
 *Disclaimer: All ABDM endpoints, ABHA token verifications, and clinical recommendations in this repository are demo-grade prototypes designed for hackathon evaluation and must undergo clinical certification before real-world patient deployment.*
